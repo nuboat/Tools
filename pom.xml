@@ -33,5 +33,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
+    <name>Tools</name>
 </project>

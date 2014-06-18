@@ -12,7 +12,7 @@
  * http://creativecommons.org/licenses/by/3.0/legalcode
  * </pre>
  */
-package com.thjug.tools.sslcert;
+package com.thjug.tools;
 
 import static org.testng.Assert.*;
 import org.testng.annotations.Test;
@@ -25,10 +25,10 @@ public class InstallCertNGTest {
 
 	@Test
 	public void testMain() throws Exception {
+		final String source = "./src/main/resources/cacerts";
+		final char[] passphrase = "changeit".toCharArray();
 		final String host = "tableau.entiera.com";
 		final int port = 443;
-		final char[] passphrase = "changeit".toCharArray();
-		final String source = "./src/main/resources/cacerts";
 		final String output = "./src/main/resources/jssecacerts";
 		final char[] outputpassphase = "changeit".toCharArray();
 		

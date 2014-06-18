@@ -12,7 +12,7 @@
  * http://creativecommons.org/licenses/by/3.0/legalcode
  * </pre>
  */
-package com.thjug.tools.sslcert;
+package com.thjug.tools;
 
 import javax.net.ssl.*;
 import java.io.*;
