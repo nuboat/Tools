@@ -12,5 +12,5 @@ Install certificate into TrustStore by destination URL.
  -  args[1] = Passphrase of source file
  -  args[2] = host url
  -  args[3] = host port
- -  args[3] = Output file
- -  args[3] = Passphrase of output file
+ -  args[4] = Output file
+ -  args[5] = Passphrase of output file
