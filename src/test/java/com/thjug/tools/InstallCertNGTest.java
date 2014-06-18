@@ -27,7 +27,7 @@ public class InstallCertNGTest {
 	public void testMain() throws Exception {
 		final String source = "./src/main/resources/cacerts";
 		final char[] passphrase = "changeit".toCharArray();
-		final String host = "tableau.entiera.com";
+		final String host = "graph.facebook.com";
 		final int port = 443;
 		final String output = "./src/main/resources/jssecacerts";
 		final char[] outputpassphase = "changeit".toCharArray();

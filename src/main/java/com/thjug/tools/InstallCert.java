@@ -31,15 +31,19 @@ import java.security.cert.X509Certificate;
  */
 public class InstallCert {
 
-    public static void main(final String[] args) throws Exception {
+    public static void main(final String[] args) {
 		final String source = args[0];
 		final char[] passphrase = args[1].toCharArray();
 		final String host = args[2];
 		final int port = Integer.parseInt(args[3]);
 		final String output = args[4];
 		final char[] outputpassphase = args[5].toCharArray();
-
-        add(source, passphrase, host, port, output, outputpassphase);
+		
+		try {
+			add(source, passphrase, host, port, output, outputpassphase);
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
     }
 	
 	/**
@@ -60,38 +64,35 @@ public class InstallCert {
 	 * @throws KeyStoreException
 	 * @throws KeyManagementException 
 	 */
-	public static boolean add(final String source, 
+	public static void add(final String source, 
 			final char[] passphrase, 
 			final String host, 
 			final int port, 
 			final String output, 
 			final char[] outputpassphase) 
-			throws NoSuchAlgorithmException, CertificateException, CertificateEncodingException, IOException, KeyStoreException, KeyManagementException {
+			throws Exception {
 
 		final KeyStore ks = loadKeyStore(source, passphrase);
 		
 		final X509Certificate[] chain = loadCertificate(ks, host, port);
-		if (chain == null) {
-			System.out.println("Could not obtain server certificate chain");
-			return true;
-		}
-		
-		printCertificate(chain);
-		
-		int i = 1;
-		try (final OutputStream out = new FileOutputStream(output)) {
-			for (final X509Certificate cert : chain) {
-				final String alias = host + "-" + i++;
-				ks.setCertificateEntry(alias, cert);
-				ks.store(out, outputpassphase);
-		
-				System.out.println();
-				System.out.println(cert);
-				System.out.println();
-				System.out.println("Added certificate to keystore 'cacerts.jks' using alias '"  + alias + "'");
+		if (chain != null) {
+			printCertificate(chain);
+
+			int i = 1;
+			try (final OutputStream out = new FileOutputStream(output)) {
+				for (final X509Certificate cert : chain) {
+					final String alias = host + "-" + i++;
+					ks.setCertificateEntry(alias, cert);
+					ks.store(out, outputpassphase);
+
+					System.out.println();
+					System.out.println(cert);
+					System.out.println();
+					System.out.println("Added certificate to keystore 'cacerts.jks' using alias '"  + alias + "'");
+				}
 			}
 		}
-		return false;
+
 	}
 
 	public static void printCertificate(final X509Certificate[] chain) 
@@ -127,7 +128,7 @@ public class InstallCert {
 	}
 	
 	public static X509Certificate [] loadCertificate(final KeyStore ks, final String host, final int port) 
-			throws NoSuchAlgorithmException, KeyManagementException, KeyStoreException {
+			throws NoSuchAlgorithmException, KeyManagementException, KeyStoreException, IOException {
 		final SSLContext context = SSLContext.getInstance("TLS");
 		final TrustManagerFactory tmf =
 				TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
@@ -144,13 +145,10 @@ public class InstallCert {
 			System.out.println();
 			System.out.println("No errors, certificate is already trusted");
 			
-			return tm.chain;
-		} catch (final Exception e) {
-			System.out.println("Errors: " + e.getMessage());
-			
+			return null;
+		} catch (final SSLHandshakeException e) {
 			return tm.chain;
 		}
-
 	}
 
     private static final char[] HEXDIGITS = "0123456789abcdef".toCharArray();
